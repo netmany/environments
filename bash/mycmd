@@ -1,0 +1,53 @@
+#!/bin/bash
+
+function ff(){
+    if [ "$#" -eq 1 ];  then
+        find . -type f -iname *$1*
+    elif [ "$#" -eq 2 ]; then
+        find $2 -type f -iname *$1*
+    else
+        echo "usage: ff filename [dir]"
+    fi
+}
+
+function fw(){
+     if [ "$#" -eq 1 ];  then
+         grep -rin "$1" . --exclude-dir=*.git
+     elif [ "$#" -eq 2 ]; then
+        if [ -f $2 ]; then 
+            grep -in "$1" $2 --exclude-dir=*.git
+        elif [ -d $2 ]; then
+            grep -rin "$1" $2 --exclude-dir=*.git
+        else
+            echo "usage: fw keyword [filename|dirname]"
+        fi
+     else
+         echo "usage: fw keyword [filename|dirname]"
+     fi
+}
+
+function sync-down(){
+    local curBranch=$(git branch 2>/dev/null | grep ^* | awk -F' ' '{print $2}');
+    if [ ! -z ${curBranch} ]; then
+        git fetch origin;
+        git rebase origin/${curBranch};
+    fi
+}
+
+function sync-up(){
+    if [ "$#" -eq 1 ];  then
+        local curBranch=$(git branch 2>/dev/null | grep ^* | awk -F' ' '{print $2}');
+        if [ ! -z ${curBranch} ]; then
+            git add .
+            git commit -s -m "$1"
+            if echo ${curBranch} | grep Int$ > /dev/null 2>&1 ; then
+                git push origin HEAD:refs/for/${curBranch}
+            else
+                git push origin HEAD:${curBranch}
+            fi
+        fi
+    else
+        echo "usage: sync-up <commit-msg>"
+    fi
+}
+
