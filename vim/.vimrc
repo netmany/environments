@@ -48,3 +48,7 @@ aug QFClose
   au!
   au WinEnter * if winnr('$') == 1 && getbufvar(winbufnr(winnr()), "&buftype") == "quickfix"|q|endif
 aug END
+
+" to indent lisp code using gg=G or visual block selection =
+autocmd bufread,bufnewfile *.ss,*.rkt,*.lisp,*.scm setlocal equalprg=lispindent.ss
+
