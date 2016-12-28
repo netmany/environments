@@ -117,17 +117,17 @@
 
 (define (string-trim-blanks s)
     (let ((n (string-length s)))
-        (let ((j (let loop ((j 0))
+        (let* ((j (let loop ((j 0))
                      (if (or (>= j n)
                              (not (char-whitespace? (string-ref s j))))
                          j
                          (loop (+ j 1)))))
               (k (let loop ((k (- n 1)))
-                     (if (or (< k 0)
+                     (if (or (< k j)
                              (not (char-whitespace? (string-ref s k))))
                          (+ k 1)
                          (loop (- k 1))))))
-            (substring s j k))))
+            (if (= j n) "" (substring s j k)))))
 
 (define-structure (lparen
                       spaces-before num-aligned-subforms num-finished-subforms))
