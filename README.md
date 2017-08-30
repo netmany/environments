@@ -1,3 +1,4 @@
 # enviroments
-config files for environments
+config files for tool environments
+
 currently include vim, git.
